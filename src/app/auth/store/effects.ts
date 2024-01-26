@@ -6,6 +6,7 @@ import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { CurrentUserInterface } from '../../shared/types/currentUser.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PersistenceService } from 'src/app/shared/services/persistence.service';
+import { Router } from '@angular/router';
 
 export const registerEffect = createEffect(
   (
@@ -33,4 +34,16 @@ export const registerEffect = createEffect(
     );
   },
   { functional: true }
+);
+
+export const redirectAfterRegisterEffect = createEffect(
+  (actions$ = inject(Actions), router = inject(Router)) => {
+    return actions$.pipe(
+      ofType(authActions.registerSuccess),
+      tap(() => {
+        router.navigateByUrl('/');
+      })
+    );
+  },
+  { functional: true, dispatch: false }
 );
